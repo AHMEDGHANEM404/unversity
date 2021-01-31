@@ -1,3 +1,7 @@
+
+
+
+######################if you use this application please make sure about file direct ####################################
 ### unversity
 ####university gui  by pyqt5
 #####tools:

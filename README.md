@@ -1,7 +1,7 @@
 
 
 
-######################if you use this application please make sure about file direct ####################################
+######################if you use this application please make sure about the correct address of db file ####################################
 ### unversity
 ####university gui  by pyqt5
 #####tools:

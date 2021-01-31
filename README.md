@@ -1,6 +1,6 @@
 ### unversity
-###university gui  by pyqt5
-###tools:
+####university gui  by pyqt5
+#####tools:
 - python 
 - oop
 - gui

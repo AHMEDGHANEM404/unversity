@@ -1,5 +1,5 @@
 ### unversity
-#university gui  by pyqt5
+##university gui  by pyqt5
 #tools:
 - python 
 - oop

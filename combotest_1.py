@@ -1,6 +1,7 @@
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QDialog, QGridLayout, QLabel, QPushButton, QTableView, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QGridLayout, QLabel, QPushButton, QTableView, QTableWidget, QTableWidgetItem
 import sys
 
 import pyodbc
@@ -14,6 +15,10 @@ num5 = []
 
 num6 = []
 # print(num6)
+x = ["ID", "name", "s1", "s2", "s3", "s4"]
+
+
+y = 0
 
 
 class Dlg(QDialog):
@@ -34,6 +39,12 @@ class Dlg(QDialog):
         # for i in range(self.nb_row):
         #     for j in range(self.nb_col):
         #         data[i].append('')
+        self.combo_box = QComboBox(self)
+
+        for i in x:
+
+            self.combo_box.addItem(i)
+
         list = []
         conn = pyodbc.connect(
             r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};'
@@ -42,7 +53,7 @@ class Dlg(QDialog):
 
         sql = f'''select * from test'''
         cursor.execute(sql)
-        
+
         for row in cursor.fetchall():
             # print(row)
             list.append(row)
@@ -56,6 +67,9 @@ class Dlg(QDialog):
             num6.append(row[5])
 
         self.table1 = QTableWidget()
+        delegate = Delegate(self.table1)
+
+        self.table1.setItemDelegate(delegate)
 
         self.table1.setRowCount(self.nb_row)
         self.table1.setColumnCount(self.nb_col)
@@ -68,10 +82,25 @@ class Dlg(QDialog):
                 self.table1.setItem(row, col, item)
 
         self.layout.addWidget(self.label1, 0, 0)
-        self.layout.addWidget(self.table1, 1, 0)
-        self.layout.addWidget(self.btn, 2, 0)
+        self.layout.addWidget(self.combo_box, 1, 0)
+
+        self.layout.addWidget(self.table1, 2, 0)
+        self.layout.addWidget(self.btn, 4, 0)
+        self.combo_box.activated[str].connect(self.on_combobox_changed)
 
         self.btn.clicked.connect(self.print_table_values)
+
+    def on_combobox_changed(self):
+        output = self.combo_box.currentIndex()
+        # y=output
+        print(output)
+        return output
+
+        # for i in x:
+        #     if i == output:
+        #         y = x.index(i)
+        #         print(y)
+        #         return x.index(i)
 
     def print_table_values(self, data):
 
@@ -81,29 +110,33 @@ class Dlg(QDialog):
                 edit.append(self.table1.item(row, col).text())
         print(edit)
 
-   
         #  code of ===>>>>>>> update
         conn = pyodbc.connect(
             r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};'
             r'DBQ=E:\project\year\code\exe project\project v1.0\v1\filter.accdb;')
         cursor = conn.cursor()
-        start=0
-        end=6
+        start = 0
+        end = 6
         while end < len(edit):
-            x=edit[start:end]
-            sql=f'UPDATE test SET s1={int(x[2])},s2={int(x[3])} ,s3={int(x[4])}, s4={int(x[5])} where ID={int(x[0])}'
+            x = edit[start:end]
+            sql = f'UPDATE test SET s1={int(x[2])},s2={int(x[3])} ,s3={int(x[4])}, s4={int(x[5])} where ID={int(x[0])}'
             cursor.execute(sql)
             conn.commit()
-            start+=6
-            end+=6
+            start += 6
+            end += 6
         # print("edit 1")
-       
-            
-            
+
+
+class Delegate(QtWidgets.QStyledItemDelegate):
+  
+    def createEditor(self, parent, option, index):
+        if index.column() ==  w.on_combobox_changed():
+            return super(Delegate, self).createEditor(parent, option, index)
 
 app = QApplication(sys.argv)
 w = Dlg(5, 6)
 w.resize(750, 300)
+# print(w.on_combobox_changed())
 w.setWindowTitle('الازهر')
 w.setWindowFlags(Qt.WindowStaysOnTopHint)
 w.show()
